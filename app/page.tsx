@@ -307,17 +307,7 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ settings, setSettings }) => {
           <Switch
             id="dark-mode"
             checked={settings.darkMode}
-            onCheckedChange={() => handleSettingChange('darkMode')}
-          />
-        </div>
-        <div className="flex items-center justify-between">
-          <Label htmlFor="notifications" className="text-black dark:text-white">
-            Enable Notifications
-          </Label>
-          <Switch
-            id="notifications"
-            checked={settings.notificationsEnabled}
-            onCheckedChange={() => handleSettingChange('notificationsEnabled')}
+            onCheckedChange={(value) => handleSettingChange('darkMode, value')}
           />
         </div>
 
