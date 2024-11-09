@@ -213,14 +213,14 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
       <div className="border-2 rounded-[1.6rem] p-1 flex w-full space-x-4">
           <Button
             onClick={handleResetSelection}
-            className="p-8 flex space-x-2 w-[30%]"
+            className="p-8 flex space-x-1 w-[30%] bg-red-400"
             disabled={isLoading || selectedEmojis.length === 0}
           >
             <RotateCcw className="w-5 h-5" />
           </Button>
           <Button
             onClick={handleGetSuggestion}
-            className="p-8 flex space-x-2 w-[70%]"
+            className="p-8 flex space-x-1 w-[70%]"
             disabled={isLoading || selectedEmojis.length === 0}
           >
             <Sparkles className="w-5 h-5" />
@@ -396,11 +396,11 @@ export default function EmotionManagementApp() {
 
   return (
     <div
-      className={`min-h-screen flex flex-col ${
+      className={`min-h-screen flex flex-col overflow-hidden ${
         settings.darkMode ? 'dark bg-black text-white' : 'bg-white text-black'
       }`}
     >
-      <main className="flex-grow p-4 pb-24 w-full">
+      <main className="flex-grow p-4 min-h-screen overflow-hidden">
         <h1 className="text-4xl font-black text-center mb-8">
           MoodMate
         </h1>
