@@ -53,6 +53,11 @@ type HistoryTabProps = {
   emotionHistory: Emotion[];
 };
 
+type SettingsTabProps = {
+  settings: AppSettings;
+  setSettings: Dispatch<SetStateAction<AppSettings>>;
+};
+
 // AI Response Dialog Component
 const AIResponseDialog = ({
   open,
