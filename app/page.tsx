@@ -263,7 +263,7 @@ const HistoryTab: React.FC<HistoryTabProps> = ({ emotionHistory }) => {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="mt-4 p-4 bg-gray-100 dark:bg-gray-700 rounded"
+                  className="mt-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg"
                 >
                   <p className="text-black dark:text-white mb-2">
                     {emotion.aiResponse.message}
