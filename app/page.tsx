@@ -49,6 +49,10 @@ type FeelingsTabProps = {
   saveEmotion: (emojis: string[], response: AIResponse) => void;
 };
 
+type HistoryTabProps = {
+  emotionHistory: Emotion[];
+};
+
 // AI Response Dialog Component
 const AIResponseDialog = ({
   open,
@@ -70,11 +74,11 @@ const AIResponseDialog = ({
         </DialogDescription>
       </DialogHeader>
       {aiResponse && (
-        <div className="space-y-4 py-4">
+        <div className="space-y-4 py-4 p-4">
           <p className="text-black dark:text-white leading-relaxed">
             {aiResponse.message}
           </p>
-          <p className="text-black dark:text-white font-medium">
+          <p className="text-black dark:text-white font-bold">
             {aiResponse.suggestion}
           </p>
         </div>
