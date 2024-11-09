@@ -21,6 +21,7 @@ import {
   Settings,
   ChevronDown,
   ChevronUp,
+  Sparkles,
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -140,7 +141,12 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   
   const emojis = [
-    '😄', '😢', '😡', '😊', '😔', '😰', '😴', '🤔', '😍', '🥳', '😎', '🤯', '🥰', '😤', '😇', '🤩', '😱', '🤗', '😌', '🙄', '😒', '🤪', '😳', '🥺',
+    '😀', '😢', '😡', '😱', '😃', '😰', '😴', '😊', '😍', '🥳', // Emozioni di base
+    '😆', '😅', '😇', '🤗', '🤔', '😣', '🙄', '😕', '🤪', '😖', '😩', '🥵', '🥶', '😤', '😎', '😞', '😜', '🤫',
+    '🤐', '😟', '🥺', '😴', '😌', '💔', '🤑', '😚', '🧐', '😋', '😶', '🤥', '😪', '🤧', '😱', '😲', '💩', '🥰',
+    '😏', '😳', '🙃', '😬', '😒', '🤮', '😯', '😠', '🤯', '🥴', '💀', '👻', '👽', '👾', '😷', '🤒', '🤕', '🤢', 
+    '💖', '💘', '💝', '💞', '💔', '💋', '💟', '🧡', '💛', '💚', '💙', '💜', '🤍', '🖤', '🤎', '😇', '😺', '😸', 
+    '😹', '😻', '😼', '🙀', '😾', '😿', '🐵', '🙈', '🙉', '🙊', '🤖', '👺', '👹', '☠️', '🧟', '💣', '💬', '🗯️'
   ];
 
   const handleEmojiClick = (emoji: string) => {
@@ -177,7 +183,7 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
       <h2 className="flex flex-col text-2xl font-semibold text-black dark:text-white mb-4 items-center justify-between">
         How are you feeling?
       </h2>
-      <ScrollArea className="h-[60vh] mx-auto w-full rounded-[1.6rem] border p-4">
+      <ScrollArea className="h-[50vh] mx-auto w-full rounded-[1.6rem] border p-4">
         <div className="grid grid-cols-4 gap-4">
           {emojis.map((emoji) => (
             <motion.button
@@ -198,10 +204,12 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
       </ScrollArea>
       <Button
         onClick={handleGetSuggestion}
-        className="w-full"
+        className="mx-auto flex items-center justify-center space-x-2"
         disabled={isLoading || selectedEmojis.length === 0}
       >
-        {isLoading ? 'Getting AI Suggestion...' : 'Get AI Suggestion'}
+        <Sparkles className="w-5 h-5" />
+        <span>FIX</span>
+            
       </Button>
 
       <AIResponseDialog
@@ -379,7 +387,7 @@ export default function EmotionManagementApp() {
           className="w-full flex flex-col min-h-screen"
           onValueChange={setActiveTab}
         >
-          <TabsList className="fixed bottom-0 right-0 left-0 bg-white dark:bg-black border-t border-gray-200 dark:border-gray-700 grid grid-cols-3 w-full h-[55px] rounded-bl-none rounded-br-none">
+          <TabsList className="fixed bottom-0 right-0 left-0 bg-white dark:bg-black border-t border-gray-200 dark:border-gray-700 grid grid-cols-3 w-full h-[55px] rounded-bl-none rounded-br-none z-50">
             <TabsTrigger value="feelings" className="flex flex-col items-center border-none">
               <SmilePlus className="h-6 w-6" />
             </TabsTrigger>
