@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -13,18 +13,18 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import {
   SmilePlus,
   History,
   Settings,
-  X,
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
 import axios from 'axios';
 
-// Types remain the same
+// Types
 type Emotion = {
   emoji: string;
   timestamp: number;
@@ -49,16 +49,44 @@ type FeelingsTabProps = {
   saveEmotion: (emojis: string[], response: AIResponse) => void;
 };
 
-type HistoryTabProps = {
-  emotionHistory: Emotion[];
-};
+// AI Response Dialog Component
+const AIResponseDialog = ({
+  open,
+  onOpenChange,
+  aiResponse,
+  selectedEmojis,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  aiResponse: AIResponse | null;
+  selectedEmojis: string[];
+}) => (
+  <Dialog open={open} onOpenChange={onOpenChange}>
+    <DialogContent className="sm:max-w-[425px]">
+      <DialogHeader>
+        <DialogTitle>AI Suggestion</DialogTitle>
+        <DialogDescription>
+          Based on your emotions: {selectedEmojis.join(' ')}
+        </DialogDescription>
+      </DialogHeader>
+      {aiResponse && (
+        <div className="space-y-4 py-4">
+          <p className="text-black dark:text-white leading-relaxed">
+            {aiResponse.message}
+          </p>
+          <p className="text-black dark:text-white font-medium">
+            {aiResponse.suggestion}
+          </p>
+        </div>
+      )}
+      <DialogFooter>
+        <Button onClick={() => onOpenChange(false)}>Close</Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
+);
 
-type SettingsTabProps = {
-  settings: AppSettings;
-  setSettings: Dispatch<SetStateAction<AppSettings>>;
-};
-
-// AI response function remains the same
+// AI response function
 const getAIResponse = async (selectedEmojis: string[]): Promise<AIResponse> => {
   const prompt = `Based on the following emojis representing the user's current emotions: ${selectedEmojis.join(
     ' '
@@ -85,7 +113,10 @@ const getAIResponse = async (selectedEmojis: string[]): Promise<AIResponse> => {
     return JSON.parse(content);
   } catch (error) {
     console.error('Error fetching AI response:', error);
-    throw new Error('API request failed');
+    return {
+      message: "Sorry, I couldn't process your request at this time.",
+      suggestion: 'Please try again later.',
+    };
   }
 };
 
@@ -110,22 +141,25 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
   };
 
   const handleGetSuggestion = async () => {
-    if (selectedEmojis.length > 0) {
-      setIsLoading(true);
-      try {
-        const response = await getAIResponse(selectedEmojis);
-        setAIResponse(response);
-        saveEmotion(selectedEmojis, response);
-        setDialogOpen(true);
-      } catch (error) {
-        console.error('Failed to get AI suggestion:', error);
-        setAIResponse({
-          message: "Sorry, I couldn't process your request at this time.",
-          suggestion: 'Please try again later.',
-        });
-      } finally {
-        setIsLoading(false);
-      }
+    if (selectedEmojis.length === 0) return;
+    
+    setIsLoading(true);
+    try {
+      const response = await getAIResponse(selectedEmojis);
+      setAIResponse(response);
+      saveEmotion(selectedEmojis, response);
+      setDialogOpen(true);
+    } catch (error) {
+      console.error('Failed to get AI suggestion:', error);
+      const fallbackResponse = {
+        message: "Sorry, I couldn't process your request at this time.",
+        suggestion: 'Please try again later.',
+      };
+      setAIResponse(fallbackResponse);
+      saveEmotion(selectedEmojis, fallbackResponse);
+      setDialogOpen(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -134,7 +168,7 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
       <h2 className="flex flex-col text-2xl font-semibold text-black dark:text-white mb-4 items-center justify-between">
         How are you feeling?
       </h2>
-      <ScrollArea className="h-48 w-full rounded-md border p-4">
+      <ScrollArea className="h-[60vh] mx-auto w-full rounded-[1.6rem] border p-4">
         <div className="grid grid-cols-4 gap-4">
           {emojis.map((emoji) => (
             <motion.button
@@ -144,7 +178,7 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
               onClick={() => handleEmojiClick(emoji)}
               className={`text-4xl p-2 rounded-full ${
                 selectedEmojis.includes(emoji)
-                  ? 'bg-gray-200 dark:bg-gray-700'
+                  ? 'bg-red-100 dark:bg-gray-700'
                   : 'bg-gray-100 dark:bg-gray-800'
               }`}
             >
@@ -161,26 +195,12 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
         {isLoading ? 'Getting AI Suggestion...' : 'Get AI Suggestion'}
       </Button>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className='rounded-[1.6rem]'>
-          <DialogHeader>
-            <DialogTitle>AI Suggestion</DialogTitle>
-            <DialogDescription>
-              Based on your current emotions: {selectedEmojis.join(' ')}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            {aiResponse && (
-              <>
-                <p className="text-black dark:text-white">{aiResponse.message}</p>
-                <p className="text-black dark:text-white font-medium">
-                  {aiResponse.suggestion}
-                </p>
-              </>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <AIResponseDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        aiResponse={aiResponse}
+        selectedEmojis={selectedEmojis}
+      />
     </div>
   );
 };
@@ -240,7 +260,7 @@ const HistoryTab: React.FC<HistoryTabProps> = ({ emotionHistory }) => {
           ))}
         </ul>
       ) : (
-        <p className="text-black dark:text-white">
+        <p className="text-black dark:text-white text-center">
           No emotion history yet.
         </p>
       )}
@@ -301,12 +321,22 @@ export default function EmotionManagementApp() {
   useEffect(() => {
     const storedHistory = localStorage.getItem('emotionHistory');
     if (storedHistory) {
-      setEmotionHistory(JSON.parse(storedHistory));
+      try {
+        setEmotionHistory(JSON.parse(storedHistory));
+      } catch (error) {
+        console.error('Error loading emotion history:', error);
+        localStorage.removeItem('emotionHistory');
+      }
     }
 
     const storedSettings = localStorage.getItem('appSettings');
     if (storedSettings) {
-      setSettings(JSON.parse(storedSettings));
+      try {
+        setSettings(JSON.parse(storedSettings));
+      } catch (error) {
+        console.error('Error loading settings:', error);
+        localStorage.removeItem('appSettings');
+      }
     }
   }, []);
 
@@ -318,7 +348,11 @@ export default function EmotionManagementApp() {
     };
     const updatedHistory = [newEmotion, ...emotionHistory].slice(0, 10);
     setEmotionHistory(updatedHistory);
-    localStorage.setItem('emotionHistory', JSON.stringify(updatedHistory));
+    try {
+      localStorage.setItem('emotionHistory', JSON.stringify(updatedHistory));
+    } catch (error) {
+      console.error('Error saving emotion history:', error);
+    }
   };
 
   return (
