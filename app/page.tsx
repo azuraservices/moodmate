@@ -22,6 +22,7 @@ import {
   ChevronDown,
   ChevronUp,
   Sparkles,
+  RotateCcw
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -102,12 +103,12 @@ const AIResponseDialog = ({
 const getAIResponse = async (selectedEmojis: string[], language: 'en' | 'it'): Promise<AIResponse> => {
   
   const prompt = language === 'en'
-  ?  `Based on the following emojis representing the user's current emotions: ${selectedEmojis.join(
-    ' '
-  )}, provide a short message of understanding (1-2 sentences) and a suggestion for an activity to improve their mood (1 sentence). Format the response as a JSON object with 'message' and 'suggestion' fields.`
-  : `In base alle seguenti emoji che rappresentano le emozioni attuali dell utente: ${selectedEmojis.join(
-    ' '
-    )}, fornisci un breve messaggio di comprensione (1-2 frasi) e un suggerimento per un’attività che possa migliorare il loro umore (1 frase). Format il risultato come un oggetto JSON con i campi ‘message’ e ‘suggestion’.`;
+    ?  `Based on the following emojis representing the user's current emotions: ${selectedEmojis.join(
+      ' '
+    )}, provide a short message of understanding (1-2 sentences) and a suggestion for an activity to improve their mood (1 sentence). Format the response as a JSON object with 'message' and 'suggestion' fields.  IMPORTANT JSON! NO OTHER TEXT!`
+    : `In base alle seguenti emoji che rappresentano le emozioni attuali dell utente: ${selectedEmojis.join(
+      ' '
+    )}, fornisci un breve messaggio di comprensione (1-2 frasi) e un suggerimento per un’attività che possa migliorare il loro umore (1 frase). Format il risultato come un oggetto JSON con i campi ‘message’ e ‘suggestion’. IMPORTANT JSON! NO OTHER TEXT!`;
 
   const url = 'https://api.groq.com/openai/v1/chat/completions';
   const headers = {
@@ -128,11 +129,14 @@ const getAIResponse = async (selectedEmojis: string[], language: 'en' | 'it'): P
     const response = await axios.post(url, data, { headers });
     const content = response.data.choices[0].message.content;
     return JSON.parse(content);
-  } catch (error) {
+  } catch (error: any) {
+    // Log the detailed error in the console
     console.error('Error fetching AI response:', error);
+
+    // Return a detailed error message based on the type of error
     return {
-      message: "Sorry, I couldn't process your request at this time.",
-      suggestion: 'Please try again later.',
+      message: "An error occurred while processing your request.",
+      suggestion: `Error details: ${error.response ? error.response.data : error.message}`
     };
   }
 };
@@ -161,6 +165,10 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
     setSelectedEmojis((prev) =>
       prev.includes(emoji) ? prev.filter((e) => e !== emoji) : [...prev, emoji]
     );
+  };
+
+  const handleResetSelection = () => {
+    setSelectedEmojis([]);
   };
 
   const handleGetSuggestion = async () => {
@@ -202,15 +210,23 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
           ))}
         </div>
       </ScrollArea>
-      <Button
-        onClick={handleGetSuggestion}
-        className="mx-auto flex items-center justify-center space-x-2"
-        disabled={isLoading || selectedEmojis.length === 0}
-      >
-        <Sparkles className="w-5 h-5" />
-        <span>FIX</span>
-            
-      </Button>
+      <div className="border-2 rounded-[1.6rem] p-1 flex w-full space-x-4">
+          <Button
+            onClick={handleResetSelection}
+            className="p-8 flex space-x-2 w-[30%]"
+            disabled={isLoading || selectedEmojis.length === 0}
+          >
+            <RotateCcw className="w-5 h-5" />
+          </Button>
+          <Button
+            onClick={handleGetSuggestion}
+            className="p-8 flex space-x-2 w-[70%]"
+            disabled={isLoading || selectedEmojis.length === 0}
+          >
+            <Sparkles className="w-5 h-5" />
+            <span>FIX</span>
+          </Button>
+        </div>
 
       <AIResponseDialog
         open={dialogOpen}
