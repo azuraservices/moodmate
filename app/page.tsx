@@ -94,39 +94,13 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const emojis = [
-    '😄',
-    '😢',
-    '😡',
-    '😊',
-    '😔',
-    '😰',
-    '😴',
-    '🤔',
-    '😍',
-    '🥳',
-    '😎',
-    '🤯',
-    '🥰',
-    '😤',
-    '😇',
-    '🤩',
-    '😱',
-    '🤗',
-    '😌',
-    '🙄',
-    '😒',
-    '🤪',
-    '😳',
-    '🥺',
+    '😄', '😢', '😡', '😊', '😔', '😰', '😴', '🤔', '😍', '🥳', '😎', '🤯', '🥰', '😤', '😇', '🤩', '😱', '🤗', '😌', '🙄', '😒', '🤪', '😳', '🥺',
   ];
 
   const handleEmojiClick = (emoji: string) => {
-    setSelectedEmojis((prev) => {
-      const newSelection = prev.includes(emoji)
-        ? prev.filter((e) => e !== emoji)
-        : [...prev, emoji];
-      return newSelection;
-    });
+    setSelectedEmojis((prev) =>
+      prev.includes(emoji) ? prev.filter((e) => e !== emoji) : [...prev, emoji]
+    );
   };
 
   const handleGetSuggestion = async () => {
@@ -150,7 +124,7 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
 
   return (
     <div className="space-y-6">
-      <h2 className="flex flex-col text-2xl font-semibold text-purple-700 dark:text-purple-400 mb-4 items-center justify-between">
+      <h2 className="flex flex-col text-2xl font-semibold text-black dark:text-white mb-4 items-center justify-between">
         How are you feeling?
       </h2>
       <ScrollArea className="h-48 w-full rounded-md border p-4">
@@ -163,8 +137,8 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
               onClick={() => handleEmojiClick(emoji)}
               className={`text-4xl p-2 rounded-full ${
                 selectedEmojis.includes(emoji)
-                  ? 'bg-purple-200 dark:bg-purple-700'
-                  : 'bg-gray-100 dark:bg-gray-700'
+                  ? 'bg-gray-200 dark:bg-gray-700'
+                  : 'bg-gray-100 dark:bg-gray-800'
               }`}
             >
               {emoji}
@@ -185,10 +159,10 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6"
+            className="bg-white dark:bg-black rounded-lg shadow-lg p-6"
           >
             <div className="flex justify-between items-start mb-4">
-              <h3 className="text-xl font-semibold text-purple-700 dark:text-purple-400">
+              <h3 className="text-xl font-semibold text-black dark:text-white">
                 AI Suggestion
               </h3>
               <Button
@@ -199,10 +173,10 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
                 <X className="h-4 w-4" />
               </Button>
             </div>
-            <p className="text-gray-700 dark:text-gray-300 mb-2">
+            <p className="text-black dark:text-white mb-2">
               {aiResponse.message}
             </p>
-            <p className="text-purple-600 dark:text-purple-400 font-medium">
+            <p className="text-black dark:text-white font-medium">
               {aiResponse.suggestion}
             </p>
           </motion.div>
@@ -217,7 +191,7 @@ const HistoryTab: React.FC<HistoryTabProps> = ({ emotionHistory }) => {
 
   return (
     <div>
-      <h2 className="flex flex-col items-center text-2xl font-semibold text-purple-700 dark:text-purple-400 mb-4">
+      <h2 className="flex flex-col items-center text-2xl font-semibold text-black dark:text-white mb-4">
         Emotion History
       </h2>
       {emotionHistory.length > 0 ? (
@@ -228,7 +202,7 @@ const HistoryTab: React.FC<HistoryTabProps> = ({ emotionHistory }) => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"
+              className="bg-white dark:bg-black rounded-lg shadow p-4"
             >
               <div
                 className="flex items-center justify-between cursor-pointer"
@@ -238,7 +212,7 @@ const HistoryTab: React.FC<HistoryTabProps> = ({ emotionHistory }) => {
               >
                 <div className="flex items-center space-x-4">
                   <span className="text-2xl">{emotion.emoji}</span>
-                  <span className="text-gray-600 dark:text-gray-400">
+                  <span className="text-black dark:text-white">
                     {formatDate(emotion.timestamp)}
                   </span>
                 </div>
@@ -255,10 +229,10 @@ const HistoryTab: React.FC<HistoryTabProps> = ({ emotionHistory }) => {
                   exit={{ opacity: 0, height: 0 }}
                   className="mt-4 p-4 bg-gray-100 dark:bg-gray-700 rounded"
                 >
-                  <p className="text-gray-700 dark:text-gray-300 mb-2">
+                  <p className="text-black dark:text-white mb-2">
                     {emotion.aiResponse.message}
                   </p>
-                  <p className="text-purple-600 dark:text-purple-400 font-medium">
+                  <p className="text-black dark:text-white font-medium">
                     {emotion.aiResponse.suggestion}
                   </p>
                 </motion.div>
@@ -267,7 +241,7 @@ const HistoryTab: React.FC<HistoryTabProps> = ({ emotionHistory }) => {
           ))}
         </ul>
       ) : (
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-black dark:text-white">
           No emotion history yet.
         </p>
       )}
@@ -286,12 +260,12 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ settings, setSettings }) => {
 
   return (
     <div className="space-y-6">
-      <h2 className="flex flex-col items-center text-2xl font-semibold text-purple-700 dark:text-purple-400 mb-4">
+      <h2 className="flex flex-col items-center text-2xl font-semibold text-black dark:text-white mb-4">
         Settings
       </h2>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label htmlFor="dark-mode" className="text-base">
+          <Label htmlFor="dark-mode" className="text-black dark:text-white">
             Dark Mode
           </Label>
           <Switch
@@ -301,7 +275,7 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ settings, setSettings }) => {
           />
         </div>
         <div className="flex items-center justify-between">
-          <Label htmlFor="notifications" className="text-base">
+          <Label htmlFor="notifications" className="text-black dark:text-white">
             Enable Notifications
           </Label>
           <Switch
@@ -310,30 +284,6 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ settings, setSettings }) => {
             onCheckedChange={() => handleSettingChange('notificationsEnabled')}
           />
         </div>
-      </div>
-      <div className="mt-8">
-        <h3 className="text-xl font-semibold text-purple-700 dark:text-purple-400 mb-2">
-          About
-        </h3>
-        <p className="text-gray-600 dark:text-gray-400">
-          MoodMate helps you track and understand your emotions over time. Use
-          the AI suggestions to get personalized advice based on your current
-          mood.
-        </p>
-      </div>
-      <div className="mt-8">
-        <h3 className="text-xl font-semibold text-purple-700 dark:text-purple-400 mb-2">
-          Contact
-        </h3>
-        <p className="text-gray-600 dark:text-gray-400">
-          For support or feedback, please email us at:
-          <a
-            href="mailto:support@emotionmanager.com"
-            className="text-purple-600 dark:text-purple-400 ml-1"
-          >
-            support@emotionmanager.com
-          </a>
-        </p>
       </div>
     </div>
   );
@@ -375,13 +325,11 @@ export default function EmotionManagementApp() {
   return (
     <div
       className={`min-h-screen flex flex-col ${
-        settings.darkMode
-          ? 'dark bg-gray-900 text-white'
-          : 'bg-gradient-to-br from-blue-100 to-purple-100'
+        settings.darkMode ? 'dark bg-black text-white' : 'bg-white text-black'
       }`}
     >
       <main className="flex-grow p-4 pb-24 w-full">
-        <h1 className="text-4xl font-black text-center text-purple-800 dark:text-purple-400 mb-8">
+        <h1 className="text-4xl font-black text-center mb-8">
           MoodMate
         </h1>
         <Tabs
@@ -389,20 +337,14 @@ export default function EmotionManagementApp() {
           className="w-full flex flex-col min-h-screen"
           onValueChange={setActiveTab}
         >
-          <TabsList className="fixed bottom-0 right-0 left-0 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 grid grid-cols-3 w-full h-[55px] rounded-bl-none rounded-br-none bg-white">
-            <TabsTrigger
-              value="feelings"
-              className="flex flex-col items-center"
-            >
+          <TabsList className="fixed bottom-0 right-0 left-0 bg-white dark:bg-black border-t border-gray-200 dark:border-gray-700 grid grid-cols-3 w-full h-[55px] rounded-bl-none rounded-br-none">
+            <TabsTrigger value="feelings" className="flex flex-col items-center border-none">
               <SmilePlus className="h-6 w-6" />
             </TabsTrigger>
-            <TabsTrigger value="history" className="flex flex-col items-center pr-0 pl-0">
+            <TabsTrigger value="history" className="flex flex-col items-center border-none">
               <History className="h-6 w-6" />
             </TabsTrigger>
-            <TabsTrigger
-              value="settings"
-              className="flex flex-col items-center"
-            >
+            <TabsTrigger value="settings" className="flex flex-col items-center border-none">
               <Settings className="h-6 w-6" />
             </TabsTrigger>
           </TabsList>
