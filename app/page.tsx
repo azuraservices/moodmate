@@ -8,6 +8,13 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
   SmilePlus,
   History,
   Settings,
@@ -17,7 +24,7 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 
-// Types
+// Types remain the same
 type Emotion = {
   emoji: string;
   timestamp: number;
@@ -51,13 +58,11 @@ type SettingsTabProps = {
   setSettings: Dispatch<SetStateAction<AppSettings>>;
 };
 
-// AI response function
+// AI response function remains the same
 const getAIResponse = async (selectedEmojis: string[]): Promise<AIResponse> => {
   const prompt = `Based on the following emojis representing the user's current emotions: ${selectedEmojis.join(
     ' '
   )}, provide a short message of understanding (1-2 sentences) and a suggestion for an activity to improve their mood (1 sentence). Format the response as a JSON object with 'message' and 'suggestion' fields.`;
-
-  console.log('Prompt sent:', prompt);
 
   const url = 'https://api.groq.com/openai/v1/chat/completions';
   const headers = {
@@ -77,7 +82,6 @@ const getAIResponse = async (selectedEmojis: string[]): Promise<AIResponse> => {
   try {
     const response = await axios.post(url, data, { headers });
     const content = response.data.choices[0].message.content;
-    console.log('API Response:', content);
     return JSON.parse(content);
   } catch (error) {
     console.error('Error fetching AI response:', error);
@@ -93,6 +97,8 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
   saveEmotion,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  
   const emojis = [
     '😄', '😢', '😡', '😊', '😔', '😰', '😴', '🤔', '😍', '🥳', '😎', '🤯', '🥰', '😤', '😇', '🤩', '😱', '🤗', '😌', '🙄', '😒', '🤪', '😳', '🥺',
   ];
@@ -110,6 +116,7 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
         const response = await getAIResponse(selectedEmojis);
         setAIResponse(response);
         saveEmotion(selectedEmojis, response);
+        setDialogOpen(true);
       } catch (error) {
         console.error('Failed to get AI suggestion:', error);
         setAIResponse({
@@ -153,35 +160,27 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
       >
         {isLoading ? 'Getting AI Suggestion...' : 'Get AI Suggestion'}
       </Button>
-      <AnimatePresence>
-        {aiResponse && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="bg-white dark:bg-black rounded-lg shadow-lg p-6"
-          >
-            <div className="flex justify-between items-start mb-4">
-              <h3 className="text-xl font-semibold text-black dark:text-white">
-                AI Suggestion
-              </h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setAIResponse(null)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            <p className="text-black dark:text-white mb-2">
-              {aiResponse.message}
-            </p>
-            <p className="text-black dark:text-white font-medium">
-              {aiResponse.suggestion}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className='rounded-[1.6rem]'>
+          <DialogHeader>
+            <DialogTitle>AI Suggestion</DialogTitle>
+            <DialogDescription>
+              Based on your current emotions: {selectedEmojis.join(' ')}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            {aiResponse && (
+              <>
+                <p className="text-black dark:text-white">{aiResponse.message}</p>
+                <p className="text-black dark:text-white font-medium">
+                  {aiResponse.suggestion}
+                </p>
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
