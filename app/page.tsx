@@ -40,6 +40,7 @@ type AIResponse = {
 type AppSettings = {
   darkMode: boolean;
   notificationsEnabled: boolean;
+  language: 'en' | 'it';
 };
 
 type FeelingsTabProps = {
@@ -48,6 +49,7 @@ type FeelingsTabProps = {
   aiResponse: AIResponse | null;
   setAIResponse: Dispatch<SetStateAction<AIResponse | null>>;
   saveEmotion: (emojis: string[], response: AIResponse) => void;
+  language: 'en' | 'it';
 };
 
 type HistoryTabProps = {
@@ -97,10 +99,15 @@ const AIResponseDialog = ({
 );
 
 // AI response function
-const getAIResponse = async (selectedEmojis: string[]): Promise<AIResponse> => {
-  const prompt = `Based on the following emojis representing the user's current emotions: ${selectedEmojis.join(
+const getAIResponse = async (selectedEmojis: string[], language: 'en' | 'it'): Promise<AIResponse> => {
+  
+  const prompt = language === 'en'
+  ?  `Based on the following emojis representing the user's current emotions: ${selectedEmojis.join(
     ' '
-  )}, provide a short message of understanding (1-2 sentences) and a suggestion for an activity to improve their mood (1 sentence). Format the response as a JSON object with 'message' and 'suggestion' fields.`;
+  )}, provide a short message of understanding (1-2 sentences) and a suggestion for an activity to improve their mood (1 sentence). Format the response as a JSON object with 'message' and 'suggestion' fields.`
+  : `In base alle seguenti emoji che rappresentano le emozioni attuali dell utente: ${selectedEmojis.join(
+    ' '
+    )}, fornisci un breve messaggio di comprensione (1-2 frasi) e un suggerimento per un’attività che possa migliorare il loro umore (1 frase). Format il risultato come un oggetto JSON con i campi ‘message’ e ‘suggestion’.`;
 
   const url = 'https://api.groq.com/openai/v1/chat/completions';
   const headers = {
@@ -136,6 +143,7 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
   aiResponse,
   setAIResponse,
   saveEmotion,
+  language,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -157,22 +165,14 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
 
   const handleGetSuggestion = async () => {
     if (selectedEmojis.length === 0) return;
-    
     setIsLoading(true);
     try {
-      const response = await getAIResponse(selectedEmojis);
+      const response = await getAIResponse(selectedEmojis, language); // Usa la prop `language`
       setAIResponse(response);
       saveEmotion(selectedEmojis, response);
       setDialogOpen(true);
     } catch (error) {
       console.error('Failed to get AI suggestion:', error);
-      const fallbackResponse = {
-        message: "Sorry, I couldn't process your request at this time.",
-        suggestion: 'Please try again later.',
-      };
-      setAIResponse(fallbackResponse);
-      saveEmotion(selectedEmojis, fallbackResponse);
-      setDialogOpen(true);
     } finally {
       setIsLoading(false);
     }
@@ -286,9 +286,9 @@ const HistoryTab: React.FC<HistoryTabProps> = ({ emotionHistory }) => {
 };
 
 const SettingsTab: React.FC<SettingsTabProps> = ({ settings, setSettings }) => {
-  const handleSettingChange = (key: keyof AppSettings) => {
+  const handleSettingChange = (key: keyof AppSettings, value: any) => {
     setSettings((prev) => {
-      const newSettings = { ...prev, [key]: !prev[key] };
+      const newSettings = { ...prev, [key]: value };
       localStorage.setItem('appSettings', JSON.stringify(newSettings));
       return newSettings;
     });
@@ -320,6 +320,21 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ settings, setSettings }) => {
             onCheckedChange={() => handleSettingChange('notificationsEnabled')}
           />
         </div>
+
+        <div className="flex items-center justify-between">
+          <Label htmlFor="language" className="text-black dark:text-white">
+            Lingua
+          </Label>
+          <select
+            id="language"
+            value={settings.language}
+            onChange={(e) => handleSettingChange('language', e.target.value)}
+            className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-[0.8rem] px-2 py-1"
+          >
+            <option value="en">English</option>
+            <option value="it">Italiano</option>
+          </select>
+        </div>
       </div>
     </div>
   );
@@ -333,6 +348,7 @@ export default function EmotionManagementApp() {
   const [settings, setSettings] = useState<AppSettings>({
     darkMode: false,
     notificationsEnabled: true,
+    language: 'en',
   });
 
   useEffect(() => {
@@ -405,6 +421,7 @@ export default function EmotionManagementApp() {
               aiResponse={aiResponse}
               setAIResponse={setAIResponse}
               saveEmotion={saveEmotion}
+              language={settings.language}
             />
           </TabsContent>
           <TabsContent value="history" className="flex-grow">
