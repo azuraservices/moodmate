@@ -307,7 +307,7 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ settings, setSettings }) => {
           <Switch
             id="dark-mode"
             checked={settings.darkMode}
-            onCheckedChange={(value) => handleSettingChange('darkMode, value')}
+            onCheckedChange={(value) => handleSettingChange('darkMode', value)}
           />
         </div>
 
