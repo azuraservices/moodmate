@@ -408,7 +408,7 @@ export default function EmotionManagementApp() {
       }`}
     >
       <main className="flex-grow p-4 flex flex-col">
-        <h1 className="text-4xl font-black text-center mb-8">
+        <h1 className="text-4xl font-black text-center mb-4">
           MoodMate
         </h1>
         <Tabs
