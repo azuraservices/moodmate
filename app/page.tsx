@@ -259,6 +259,15 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
     }
   };
 
+  const [isPWA, setIsPWA] = useState(false);
+
+  // Usa useEffect per verificare la modalità solo lato client
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsPWA(window.matchMedia('(display-mode: standalone)').matches);
+    }
+  }, []);
+
   return (
     <div className="space-y-2 h-full flex flex-col">
       <h2 className="text-2xl font-semibold text-black dark:text-white text-center">
@@ -267,9 +276,7 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
       <p className='text-center text-gray-600 dark:text-gray-400 pb-2'>Choose one or multiple emojis</p>
       <ScrollArea
         className={`flex-grow rounded-[1.6rem] border p-4 ${
-          window.matchMedia('(display-mode: standalone)').matches
-            ? 'h-[calc(100vh-100px)]' // Altezza ridotta per PWA
-            : 'h-[calc(100vh-300px)]' // Altezza per Safari con barra del browser
+          isPWA ? 'h-[calc(100vh-100px)]' : 'h-[calc(100vh-300px)]'
         }`}
       >
         <div className="grid grid-cols-4 gap-4">
