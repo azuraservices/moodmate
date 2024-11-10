@@ -276,7 +276,7 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
       <p className='text-center text-gray-600 dark:text-gray-400 pb-2'>Choose one or multiple emojis</p>
       <ScrollArea
         className={`flex-grow rounded-[1.6rem] border p-4 ${
-          isPWA ? 'h-[calc(100vh-300px)]' : 'h-[calc(100vh-400px)]'
+          isPWA ? 'h-[calc(100vh-340px)]' : 'h-[calc(100vh-440px)]'
         }`}
       >
         <div className="grid grid-cols-4 gap-4">
@@ -497,7 +497,7 @@ export default function EmotionManagementApp() {
           className="flex-grow flex flex-col"
           onValueChange={setActiveTab}
         >
-          <TabsList className="fixed bottom-5 right-0 left-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 grid grid-cols-3 mt-4 mr-4 ml-4 h-[65px] z-50">
+          <TabsList className="fixed bottom-5 right-0 left-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 grid grid-cols-3 mt-4 mr-4 ml-4 h-[75px] z-50">
             <TabsTrigger value="feelings" className="flex flex-col items-center border-none">
               <SmilePlus className="h-6 w-6" />
             </TabsTrigger>
