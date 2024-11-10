@@ -81,11 +81,15 @@ const AIResponseDialog = ({
 
   const captureAndShare = async () => {
     if (dialogRef.current) {
+      // Trova i pulsanti e nascondili temporaneamente
+      const buttons = dialogRef.current.querySelectorAll('.share-button, .close-button');
+      buttons.forEach(button => button.classList.add('hidden'));
+  
       try {
         const dataUrl = await toPng(dialogRef.current, { quality: 0.95 });
         const blob = await (await fetch(dataUrl)).blob();
         const file = new File([blob], 'moodmate-suggestion.png', { type: blob.type });
-      
+  
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({
             files: [file],
@@ -103,6 +107,9 @@ const AIResponseDialog = ({
         }
       } catch (error) {
         console.error('Error capturing or sharing dialog:', error);
+      } finally {
+        // Rendi i pulsanti nuovamente visibili
+        buttons.forEach(button => button.classList.remove('hidden'));
       }
     }
   };
@@ -114,7 +121,11 @@ const AIResponseDialog = ({
           <DialogTitle>Moodboard</DialogTitle>
           <DialogDescription className="flex flex-col items-center justify-center text-center my-4">
             <span>Based on your emotions:</span>
-            <span className="text-5xl mt-6">{selectedEmojis.join(' ')}</span>
+            <span className="text-5xl mt-6 flex" style={{ display: 'inline-flex', gap: '0.5rem' }}>
+              {selectedEmojis.map((emoji, index) => (
+                <span key={index}>{emoji}</span>
+              ))}
+            </span>
           </DialogDescription>
         </DialogHeader>
         {aiResponse && (
@@ -128,18 +139,18 @@ const AIResponseDialog = ({
           </div>
         )}
         <DialogFooter className="flex flex-row items-center justify-center gap-4">
-          <Button
-            onClick={() => onOpenChange(false)}
-            className="w-12 h-12 rounded-full flex bg-red-500 hover:bg-gray-300 outline-none"
-          >
-            <X className="h-7 w-7" aria-hidden="true" />
-          </Button>
-          <Button
-            onClick={captureAndShare}
-            className="w-12 h-12 rounded-full flex bg-blue-500 hover:bg-blue-600 text-white outline-none"
-          >
-            <Share2 className="h-7 w-7" aria-hidden="true" />
-          </Button>
+        <Button
+          onClick={() => onOpenChange(false)}
+          className="close-button w-12 h-12 rounded-full flex bg-red-500 hover:bg-gray-300 outline-none"
+        >
+          <X className="h-7 w-7" aria-hidden="true" />
+        </Button>
+        <Button
+          onClick={captureAndShare}
+          className="share-button w-12 h-12 rounded-full flex bg-blue-500 hover:bg-blue-600 text-white outline-none"
+        >
+          <Share2 className="h-7 w-7" aria-hidden="true" />
+        </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
