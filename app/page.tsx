@@ -427,7 +427,7 @@ export default function EmotionManagementApp() {
               <Settings className="h-6 w-6" />
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="feelings" className="flex-grow overflow-hidden">
+          <TabsContent value="feelings" className="flex-grow overflow-hidden h-full p-0 m-0">
             <FeelingsTab
               selectedEmojis={selectedEmojis}
               setSelectedEmojis={setSelectedEmojis}
