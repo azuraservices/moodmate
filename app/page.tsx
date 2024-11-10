@@ -81,7 +81,7 @@ const AIResponseDialog = ({
         <DialogTitle>Moodboard</DialogTitle>
         <DialogDescription className="flex flex-col items-center justify-center text-center my-4">
           <span>Based on your emotions:</span>
-          <span className="text-5xl mt-2">{selectedEmojis.join(' ')}</span>
+          <span className="text-5xl mt-6">{selectedEmojis.join(' ')}</span>
         </DialogDescription>
       </DialogHeader>
       {aiResponse && (
@@ -112,9 +112,9 @@ const getAIResponse = async (selectedEmojis: string[], language: 'en' | 'it'): P
     ' '
   )}, provide a short message of understanding (1-2 sentences) and a suggestion for an activity to improve their mood (1 sentence). Format the response as a JSON object with 'message' and 'suggestion' fields. IMPORTANT JSON! NO OTHER TEXT!`;
   
-  const italianPrompt = `Considerando le seguenti emoji che rappresentano le emozioni attuali dell'utente: ${selectedEmojis.join(
+  const italianPrompt = `Osserva il gruppo di emoji che rappresenta le emozioni attuali dell'utente: ${selectedEmojis.join(
     ' '
-  )}, interpreta in modo immaginativo ciò che queste emozioni potrebbero suggerire sullo stato d'animo dell'utente e fornisci un messaggio di comprensione (1-2 frasi) che rifletta questa interpretazione. Suggerisci anche un'attività unica o insolita che possa arricchire il loro umore o offrire conforto (1 frase). Format il risultato come un oggetto JSON con i campi 'message' e 'suggestion'. IMPORTANT JSON! NO OTHER TEXT!`;
+  )}. Interpreta questo gruppo come un insieme unico per dedurre l'emozione generale o l'atmosfera che potrebbe riflettere, senza analizzare ogni emoji singolarmente. Fornisci un breve messaggio di comprensione (1-2 frasi) che rifletta questa interpretazione complessiva e suggerisci un'attività specifica, creativa o particolare che possa migliorare il loro umore. Format il risultato come un oggetto JSON con i campi ‘message’ e ‘suggestion’. IMPORTANT JSON! NO OTHER TEXT!`;
 
   const prompt = language === 'en' ? englishPrompt : italianPrompt;
 
