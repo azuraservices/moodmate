@@ -76,7 +76,7 @@ const AIResponseDialog = ({
   selectedEmojis: string[];
 }) => (
   <Dialog open={open} onOpenChange={onOpenChange}>
-    <DialogContent className="w-full max-h-[90vh] overflow-y-auto">
+    <DialogContent className="w-full h-full overflow-y-auto">
       <DialogHeader className='items-center justify-center'>
         <DialogTitle>Moodboard</DialogTitle>
         <DialogDescription className="flex flex-col items-center justify-center text-center my-4">
