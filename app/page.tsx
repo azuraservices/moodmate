@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { useState, useEffect, Dispatch, SetStateAction, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -24,8 +24,10 @@ import {
   Sparkles,
   RotateCcw,
   X,
+  Share2,
 } from 'lucide-react';
 import axios from 'axios';
+import { toPng } from 'html-to-image';
 
 // Types
 type Emotion = {
@@ -74,37 +76,75 @@ const AIResponseDialog = ({
   onOpenChange: (open: boolean) => void;
   aiResponse: AIResponse | null;
   selectedEmojis: string[];
-}) => (
-  <Dialog open={open} onOpenChange={onOpenChange}>
-    <DialogContent className="w-full h-full overflow-y-auto">
-      <DialogHeader className='items-center justify-center'>
-        <DialogTitle>Moodboard</DialogTitle>
-        <DialogDescription className="flex flex-col items-center justify-center text-center my-4">
-          <span>Based on your emotions:</span>
-          <span className="text-5xl mt-6">{selectedEmojis.join(' ')}</span>
-        </DialogDescription>
-      </DialogHeader>
-      {aiResponse && (
-        <div className="space-y-4 py-4 p-4">
-          <p className="text-black dark:text-white leading-relaxed">
-            {aiResponse.message}
-          </p>
-          <p className="text-black dark:text-white font-bold">
-            {aiResponse.suggestion}
-          </p>
-        </div>
-      )}
-      <DialogFooter className='items-center justify-center'>
-        <Button
-          onClick={() => onOpenChange(false)}
-          className="w-12 h-12 rounded-full flex items-center justify-center bg-red-500 hover:bg-gray-300 outline-none"
-        >
-          <X className="h-7 w-7" aria-hidden="true" />
-        </Button>
-      </DialogFooter>
-    </DialogContent>
-  </Dialog>
-);
+}) => {
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  const captureAndShare = async () => {
+    if (dialogRef.current) {
+      try {
+        const dataUrl = await toPng(dialogRef.current, { quality: 0.95 });
+        const blob = await (await fetch(dataUrl)).blob();
+        const file = new File([blob], 'moodmate-suggestion.png', { type: blob.type });
+      
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: 'MoodMate Suggestion',
+            text: 'Check out my MoodMate suggestion!',
+          });
+        } else {
+          // Fallback per browser che non supportano Web Share API
+          const link = document.createElement('a');
+          link.href = dataUrl;
+          link.download = 'moodmate-suggestion.png';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      } catch (error) {
+        console.error('Error capturing or sharing dialog:', error);
+      }
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="w-full h-full overflow-y-auto" ref={dialogRef}>
+        <DialogHeader className='items-center justify-center'>
+          <DialogTitle>Moodboard</DialogTitle>
+          <DialogDescription className="flex flex-col items-center justify-center text-center my-4">
+            <span>Based on your emotions:</span>
+            <span className="text-5xl mt-6">{selectedEmojis.join(' ')}</span>
+          </DialogDescription>
+        </DialogHeader>
+        {aiResponse && (
+          <div className="space-y-4 py-4 p-4">
+            <p className="text-black dark:text-white leading-relaxed">
+              {aiResponse.message}
+            </p>
+            <p className="text-black dark:text-white font-bold">
+              {aiResponse.suggestion}
+            </p>
+          </div>
+        )}
+        <DialogFooter className="flex flex-row items-center justify-center gap-4">
+          <Button
+            onClick={() => onOpenChange(false)}
+            className="w-12 h-12 rounded-full flex bg-red-500 hover:bg-gray-300 outline-none"
+          >
+            <X className="h-7 w-7" aria-hidden="true" />
+          </Button>
+          <Button
+            onClick={captureAndShare}
+            className="w-12 h-12 rounded-full flex bg-blue-500 hover:bg-blue-600 text-white outline-none"
+          >
+            <Share2 className="h-7 w-7" aria-hidden="true" />
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 // AI response function
 const getAIResponse = async (selectedEmojis: string[], language: 'en' | 'it'): Promise<AIResponse> => {
@@ -114,7 +154,7 @@ const getAIResponse = async (selectedEmojis: string[], language: 'en' | 'it'): P
   
   const italianPrompt = `Guarda il gruppo di emoji che ho scelto per rappresentare come mi sento ora: ${selectedEmojis.join(
     ' '
-  )}. Interpreta il mio stato danimo come se fossi un esperta cartomante, astrologa, sensitiva, oracolo. Scrivi un messaggio (2 frasi) per riflettere il mio stato d'animo e suggerisci un’attività interessante e originale per migliorare il mio umore. Rispondi in JSON con i campi ‘message’ e ‘suggestion’. IMPORTANT JSON!! NO OTHER TEXT!!`;
+  )}. Interpreta il mio stato danimo come se fossi un esperta cartomante, astrologa, sensitiva, oracolo. Scrivi un messaggio (2 frasi) per riflettere il mio stato d'animo e suggerisci un'attività interessante e originale per migliorare il mio umore. Rispondi in JSON con i campi 'message' e 'suggestion'. IMPORTANT JSON!! NO OTHER TEXT!!`;
 
   const prompt = language === 'en' ? englishPrompt : italianPrompt;
 
@@ -361,7 +401,7 @@ export default function EmotionManagementApp() {
   const [settings, setSettings] = useState<AppSettings>({
     darkMode: false,
     notificationsEnabled: true,
-    language: 'en',
+    language: 'it',
   });
 
   useEffect(() => {
