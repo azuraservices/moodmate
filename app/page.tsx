@@ -97,7 +97,7 @@ const AIResponseDialog = ({
       <DialogFooter className='items-center justify-center'>
         <Button
           onClick={() => onOpenChange(false)}
-          className="w-12 h-12 rounded-full flex items-center justify-center bg-red-500 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          className="w-12 h-12 rounded-full flex items-center justify-center bg-red-500 hover:bg-gray-300 outline-none"
         >
           <X className="h-7 w-7" aria-hidden="true" />
         </Button>
@@ -112,9 +112,9 @@ const getAIResponse = async (selectedEmojis: string[], language: 'en' | 'it'): P
     ' '
   )}, provide a short message of understanding (1-2 sentences) and a suggestion for an activity to improve their mood (1 sentence). Format the response as a JSON object with 'message' and 'suggestion' fields. IMPORTANT JSON! NO OTHER TEXT!`;
   
-  const italianPrompt = `Osserva il gruppo di emoji che rappresenta le emozioni attuali dell'utente: ${selectedEmojis.join(
+  const italianPrompt = `Guarda il gruppo di emoji che ho scelto per rappresentare come mi sento ora: ${selectedEmojis.join(
     ' '
-  )}. Interpreta questo gruppo come un insieme unico per dedurre l'emozione generale o l'atmosfera che potrebbe riflettere, senza analizzare ogni emoji singolarmente. Fornisci un breve messaggio di comprensione (1-2 frasi) che rifletta questa interpretazione complessiva e suggerisci un'attività specifica, creativa o particolare che possa migliorare il loro umore. Format il risultato come un oggetto JSON con i campi ‘message’ e ‘suggestion’. IMPORTANT JSON! NO OTHER TEXT!`;
+  )}. Interpreta il mio stato danimo come se fossi un esperta cartomante, astrologa, sensitiva, oracolo. Scrivi un messaggio (2 frasi) per riflettere il mio stato d'animo e suggerisci un’attività interessante e originale per migliorare il mio umore. Rispondi in JSON con i campi ‘message’ e ‘suggestion’. IMPORTANT JSON!! NO OTHER TEXT!!`;
 
   const prompt = language === 'en' ? englishPrompt : italianPrompt;
 
@@ -127,7 +127,7 @@ const getAIResponse = async (selectedEmojis: string[], language: 'en' | 'it'): P
   const data = {
     model: 'llama-3.2-90b-text-preview',
     messages: [{ role: 'user', content: prompt }],
-    temperature: 0.7,
+    temperature: 1,
     max_tokens: 150,
     top_p: 1,
     stream: false,
