@@ -179,7 +179,7 @@ const getAIResponse = async (selectedEmojis: string[], language: 'en' | 'it'): P
     model: 'llama-3.2-90b-text-preview',
     messages: [{ role: 'user', content: prompt }],
     temperature: 1,
-    max_tokens: 150,
+    max_tokens: 300,
     top_p: 1,
     stream: false,
   };
