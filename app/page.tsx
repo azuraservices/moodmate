@@ -279,7 +279,7 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => handleEmojiClick(emoji)}
-              className={`text-4xl p-2 rounded-full ${
+              className={`text-4xl p-2 rounded-full aspect-square ${
                 selectedEmojis.includes(emoji)
                   ? 'bg-red-100 dark:bg-gray-700'
                   : 'bg-gray-100 dark:bg-gray-800'
