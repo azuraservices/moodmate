@@ -276,7 +276,7 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
       <p className='text-center text-gray-600 dark:text-gray-400 pb-2'>Choose one or multiple emojis</p>
       <ScrollArea
         className={`flex-grow rounded-[1.6rem] border p-4 ${
-          isPWA ? 'h-[calc(100vh-100px)]' : 'h-[calc(100vh-300px)]'
+          isPWA ? 'h-[calc(100vh-200px)]' : 'h-[calc(100vh-350px)]'
         }`}
       >
         <div className="grid grid-cols-4 gap-4">
