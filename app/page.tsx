@@ -497,7 +497,7 @@ export default function EmotionManagementApp() {
           className="flex-grow flex flex-col"
           onValueChange={setActiveTab}
         >
-          <TabsList className="fixed bottom-5 right-0 left-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 grid grid-cols-3 mt-4 mr-4 ml-4 h-[75px] z-50">
+          <TabsList className="fixed bottom-5 right-0 left-0 bg-white dark:bg-gray-800 border border-gray-200 active:bg-white dark:border-gray-700 grid grid-cols-3 mt-4 mr-4 ml-4 h-[75px] z-50">
             <TabsTrigger value="feelings" className="flex flex-col items-center border-none">
               <SmilePlus className="h-6 w-6" />
             </TabsTrigger>
