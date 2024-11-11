@@ -169,7 +169,8 @@ const getAIResponse = async (selectedEmojis: string[], language: 'en' | 'it'): P
 
   const url = 'https://api.groq.com/openai/v1/chat/completions';
   const headers = {
-    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+    Authorization:
+      'Bearer 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',
     'Content-Type': 'application/json',
   };
   const data = {
