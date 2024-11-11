@@ -4,7 +4,7 @@
 
 **MoodMate** is a Next.js-based web application designed to help users track and manage their emotions interactively. Users express their mood through emoji selections, and an AI provides personalized responses and suggestions, such as relaxation exercises, activities, or motivational content, tailored to the user’s emotional state. The app features a simple, intuitive UI with a minimalist design, offering users a seamless experience in managing their emotional well-being.
 
-![Demo](/moodmatedemo.gif)
+![Demo](public/moodmatedemo.gif)
 
 ## Features
 
