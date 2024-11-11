@@ -81,7 +81,6 @@ const AIResponseDialog = ({
 
   const captureAndShare = async () => {
     if (dialogRef.current) {
-      // Trova i pulsanti e nascondili temporaneamente
       const buttons = dialogRef.current.querySelectorAll('.share-button, .close-button');
       buttons.forEach(button => button.classList.add('hidden'));
   
@@ -97,7 +96,6 @@ const AIResponseDialog = ({
             text: 'Check out my MoodMate suggestion!',
           });
         } else {
-          // Fallback per browser che non supportano Web Share API
           const link = document.createElement('a');
           link.href = dataUrl;
           link.download = 'moodmate-suggestion.png';
@@ -108,7 +106,6 @@ const AIResponseDialog = ({
       } catch (error) {
         console.error('Error capturing or sharing dialog:', error);
       } finally {
-        // Rendi i pulsanti nuovamente visibili
         buttons.forEach(button => button.classList.remove('hidden'));
       }
     }
@@ -116,10 +113,10 @@ const AIResponseDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full h-full overflow-y-auto" ref={dialogRef}>
+      <DialogContent className="w-full h-full overflow-y-auto bg-white dark:bg-gray-800 text-black dark:text-white" ref={dialogRef}>
         <DialogHeader className='items-center justify-center'>
-          <DialogTitle>Moodboard</DialogTitle>
-          <DialogDescription className="flex flex-col items-center justify-center text-center my-4">
+          <DialogTitle className="text-black dark:text-white">Moodboard</DialogTitle>
+          <DialogDescription className="flex flex-col items-center justify-center text-center my-4 text-gray-600 dark:text-gray-400">
             <span>Based on your emotions:</span>
             <span className="text-5xl mt-6 flex" style={{ display: 'inline-flex', gap: '0.5rem' }}>
               {selectedEmojis.map((emoji, index) => (
@@ -141,13 +138,13 @@ const AIResponseDialog = ({
         <DialogFooter className="flex flex-row items-center justify-center gap-4">
         <Button
           onClick={() => onOpenChange(false)}
-          className="close-button w-12 h-12 rounded-full flex bg-red-500 hover:bg-gray-300 outline-none"
+          className="close-button w-12 h-12 rounded-full flex bg-red-500 hover:bg-red-600 dark:bg-red-700 dark:hover:bg-red-800 text-white outline-none"
         >
           <X className="h-7 w-7" aria-hidden="true" />
         </Button>
         <Button
           onClick={captureAndShare}
-          className="share-button w-12 h-12 rounded-full flex bg-blue-500 hover:bg-blue-600 text-white outline-none"
+          className="share-button w-12 h-12 rounded-full flex bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800 text-white outline-none"
         >
           <Share2 className="h-7 w-7" aria-hidden="true" />
         </Button>
@@ -159,13 +156,14 @@ const AIResponseDialog = ({
 
 // AI response function
 const getAIResponse = async (selectedEmojis: string[], language: 'en' | 'it'): Promise<AIResponse> => {
-  const englishPrompt = `Based on the following emojis representing the user's current emotions: ${selectedEmojis.join(
+  const englishPrompt = `Look at the group of emojis I've chosen to represent how I'm feeling right now: ${selectedEmojis.join(
     ' '
-  )}, provide a short message of understanding (1-2 sentences) and a suggestion for an activity to improve their mood (1 sentence). Format the response as a JSON object with 'message' and 'suggestion' fields. IMPORTANT JSON! NO OTHER TEXT!`;
+  )}. Interpret my mood as if you were an expert fortune-teller, astrologer, psychic, oracle. Write a message (2 sentences) to reflect my state of mind and suggest an interesting, unusual, and original activity to improve my mood. Respond in JSON with the fields 'message' and 'suggestion'. IMPORTANT JSON!! NO OTHER TEXT!!`;
   
   const italianPrompt = `Guarda il gruppo di emoji che ho scelto per rappresentare come mi sento ora: ${selectedEmojis.join(
     ' '
-  )}. Interpreta il mio stato danimo come se fossi un esperta cartomante, astrologa, sensitiva, oracolo. Scrivi un messaggio (2 frasi) per riflettere il mio stato d'animo e suggerisci un'attività interessante e originale per migliorare il mio umore. Rispondi in JSON con i campi 'message' e 'suggestion'. IMPORTANT JSON!! NO OTHER TEXT!!`;
+  )}. Interpreta il mio stato danimo come se fossi un esperta cartomante, astrologa, sensitiva, oracolo. Scrivi un messaggio (2 frasi) per riflettere il mio stato d'animo e suggerisci un'attività interessante, inusuale e originale per migliorare il mio umore. Rispondi in JSON con i campi 'message' e 'suggestion'. IMPORTANT JSON!! NO OTHER TEXT!!`;
+
 
   const prompt = language === 'en' ? englishPrompt : italianPrompt;
 
@@ -229,10 +227,7 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
     '🕵️‍♀️', '🕵️‍♂️', '👷‍♀️', '👷‍♂️', '🤶', '🎅', '🧙‍♀️', '🧙‍♂️', '🧝‍♀️', '🧝‍♂️',
     '🧛‍♀️', '🧛‍♂️', '🧟‍♀️', '🧟‍♂️', '🧞‍♀️', '🧞‍♂️', '🧜‍♀️', '🧜‍♂️', '🧚‍♀️', '🧚‍♂️',
     '👸', '🤴', '🦸‍♀️', '🦸‍♂️', '🦹‍♀️', '🦹‍♂️', '💂‍♀️', '💂‍♂️', '🕴️', '🎩',
-    '🎓', '👑', '💍', '💼', '🕶️', '🥽', '🥼', '🦺', '👗', '👔', '👖', '👜', '👚',
-    '👕', '🧥', '👙', '👛', '👠', '👡', '👢', '👞', '👟', '🧦', '🥾', '🧤', '👒',
-    '👑', '🎩', '👟', '👞', '🧦', '💍', '💼', '💄', '💅'
-  ];
+    '🎓', '👑', '💍', '💼', '🕶️', '🥽', '🥼', '🦺', '👗', '👔', '👖', '👜', ];
 
   const handleEmojiClick = (emoji: string) => {
     setSelectedEmojis((prev) =>
@@ -261,7 +256,6 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
 
   const [isPWA, setIsPWA] = useState(false);
 
-  // Usa useEffect per verificare la modalità solo lato client
   useEffect(() => {
     if (typeof window !== 'undefined') {
       setIsPWA(window.matchMedia('(display-mode: standalone)').matches);
@@ -275,7 +269,7 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
       </h2>
       <p className='text-center text-gray-600 dark:text-gray-400 pb-2'>Choose one or multiple emojis</p>
       <ScrollArea
-        className={`flex-grow rounded-[1.6rem] border p-4 ${
+        className={`flex-grow rounded-[1.6rem] border border-gray-200 dark:border-gray-700 p-4 ${
           isPWA ? 'h-[calc(100vh-346px)]' : 'h-[calc(100vh-430px)]'
         }`}
       >
@@ -286,7 +280,7 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => handleEmojiClick(emoji)}
-              className={`text-4xl p-2 rounded-full aspect-square ${
+              className={`text-4xl rounded-full aspect-square ${
                 selectedEmojis.includes(emoji)
                   ? 'bg-red-100 dark:bg-gray-700'
                   : 'bg-gray-100 dark:bg-gray-800'
@@ -297,17 +291,17 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
           ))}
         </div>
       </ScrollArea>
-      <div className="border rounded-[1.6rem] p-2 flex w-full space-x-4">
+      <div className="border border-gray-200 dark:border-gray-700 rounded-[1.6rem] p-2 flex w-full space-x-4">
         <Button
           onClick={handleResetSelection}
-          className="p-8 flex space-x-1 w-[30%] bg-red-400"
+          className="p-8 flex space-x-1 w-[30%] bg-red-400 hover:bg-red-500 dark:bg-red-600 dark:hover:bg-red-700 text-white"
           disabled={isLoading || selectedEmojis.length === 0}
         >
           <RotateCcw className="w-5 h-5" />
         </Button>
         <Button
           onClick={handleGetSuggestion}
-          className="p-8 flex space-x-1 w-[70%] bg-black"
+          className="p-8 flex space-x-1 w-[70%] bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200"
           disabled={isLoading || selectedEmojis.length === 0}
         >
           <Sparkles className="w-5 h-5" />
@@ -341,7 +335,7 @@ const HistoryTab: React.FC<HistoryTabProps> = ({ emotionHistory }) => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white dark:bg-gray-800 rounded-lg border p-4"
+                className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4"
               >
                 <div
                   className="flex items-center justify-between cursor-pointer"
@@ -356,9 +350,9 @@ const HistoryTab: React.FC<HistoryTabProps> = ({ emotionHistory }) => {
                     </span>
                   </div>
                   {expandedItem === index ? (
-                    <ChevronUp className="h-5 w-5" />
+                    <ChevronUp className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                   ) : (
-                    <ChevronDown className="h-5 w-5" />
+                    <ChevronDown className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                   )}
                 </div>
                 {expandedItem === index && emotion.aiResponse && (
@@ -485,11 +479,11 @@ export default function EmotionManagementApp() {
   return (
     <div
       className={`min-h-screen flex flex-col ${
-        settings.darkMode ? 'dark bg-gray-900 text-white' : 'bg-white text-black'
+        settings.darkMode ? 'dark' : ''
       }`}
     >
-      <main className="flex-grow p-4 flex flex-col">
-        <h1 className="text-4xl font-black text-center mb-4">
+      <main className="flex-grow p-4 flex flex-col bg-white dark:bg-gray-900 text-black dark:text-white">
+        <h1 className="text-4xl font-black text-center mb-4 text-black dark:text-white">
           MoodMate
         </h1>
         <Tabs
@@ -497,14 +491,14 @@ export default function EmotionManagementApp() {
           className="flex-grow flex flex-col"
           onValueChange={setActiveTab}
         >
-          <TabsList className="fixed bottom-5 right-0 left-0 bg-white dark:bg-gray-800 border border-gray-200 active:bg-white dark:border-gray-700 grid grid-cols-3 mt-4 mr-4 ml-4 h-[75px] z-50">
-            <TabsTrigger value="feelings" className="flex flex-col items-center border-none">
+          <TabsList className="fixed bottom-5 right-0 left-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 grid grid-cols-3 mt-4 mr-4 ml-4 h-[75px] z-50">
+            <TabsTrigger value="feelings" className="flex flex-col items-center border-none data-[state=active]:bg-transparent data-[state=active]:text-primary">
               <SmilePlus className="h-6 w-6" />
             </TabsTrigger>
-            <TabsTrigger value="history" className="flex flex-col items-center border-none">
+            <TabsTrigger value="history" className="flex flex-col items-center border-none data-[state=active]:bg-transparent data-[state=active]:text-primary">
               <History className="h-6 w-6" />
             </TabsTrigger>
-            <TabsTrigger value="settings" className="flex flex-col items-center border-none">
+            <TabsTrigger value="settings" className="flex flex-col items-center border-none data-[state=active]:bg-transparent data-[state=active]:text-primary">
               <Settings className="h-6 w-6" />
             </TabsTrigger>
           </TabsList>
