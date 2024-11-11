@@ -273,14 +273,14 @@ const FeelingsTab: React.FC<FeelingsTabProps> = ({
           isPWA ? 'h-[calc(100vh-346px)]' : 'h-[calc(100vh-430px)]'
         }`}
       >
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12 gap-4 md:gap-2">
           {emojis.map((emoji) => (
             <motion.button
               key={emoji}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => handleEmojiClick(emoji)}
-              className={`text-4xl rounded-full aspect-square ${
+              className={`text-4xl rounded-full aspect-square max-h-[80px] items-center justify-center ${
                 selectedEmojis.includes(emoji)
                   ? 'bg-red-100 dark:bg-gray-700'
                   : 'bg-gray-100 dark:bg-gray-800'
