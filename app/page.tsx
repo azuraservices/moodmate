@@ -174,7 +174,7 @@ const getAIResponse = async (selectedEmojis: string[], language: 'en' | 'it'): P
     'Content-Type': 'application/json',
   };
   const data = {
-    model: 'llama-3.2-90b-text-preview',
+    model: 'llama-3.2-11b-vision-preview',
     messages: [{ role: 'user', content: prompt }],
     temperature: 1,
     max_tokens: 300,
